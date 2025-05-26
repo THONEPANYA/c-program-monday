@@ -1,0 +1,102 @@
+#include <stdio.h>
+
+void inputMoney(int *money1, int *money2) {
+    printf("Input money 1 (20000): ");
+    scanf("%d", money1);
+    printf("Input money 2 (10000): ");
+    scanf("%d", money2);
+}
+
+int selectDrink() {
+    int choice;
+    int price = 0;
+    printf("Select drink:\n");
+    printf("1. Water 5000\n");
+    printf("2. Pepsi 10000\n");
+    printf("3. Oishi 12000\n");
+    printf("0. Finish selection\n");
+    printf("Your choice: ");
+    scanf("%d", &choice);
+
+    switch(choice) {
+        case 1: price = 5000; break;
+        case 2: price = 10000; break;
+        case 3: price = 12000; break;
+        case 0: price = 0; break; // Finish
+        default:
+            printf("Invalid choice.\n");
+            price = -1; // invalid
+    }
+    return price;
+}
+
+void calculateChange(int totalMoney, int totalPrice) {
+    int change = totalMoney - totalPrice;
+    if (change < 0) {
+        printf("Insufficient funds.\n");
+        return;
+    }
+
+    printf("Total price: %d\n", totalPrice);
+    printf("Total money: %d\n", totalMoney);
+    printf("Change: %d\n", change);
+
+    int count5000 = change / 5000;
+    change = change % 5000;
+
+    int count1000 = change / 1000;
+    change = change % 1000;
+
+    printf("Number of 5000 bills: %d\n", count5000);
+    printf("Number of 1000 bills: %d\n", count1000);
+
+    if (change > 0) {
+        printf("Remaining amount cannot be given in 5000 or 1000 bills: %d\n", change);
+    }
+}
+
+int main() {
+    int money1, money2;
+    inputMoney(&money1, &money2);
+    int totalMoney = money1 + money2;
+
+    int totalPrice = 0;
+    int price;
+    while (1) {
+        price = selectDrink();
+        if (price == 0) {
+            // finish selection
+            break;
+        } else if (price == -1) {
+            // invalid choice, ask again
+            continue;
+        } else {
+            totalPrice += price;
+            int balance = totalMoney - totalPrice;
+
+            printf("Added %d to total price.\n", price);
+            printf("Total price so far: %d\n", totalPrice);
+            printf("Remaining balance: %d\n", balance);
+
+            if (balance < 0) {
+                printf("Warning: You have exceeded the money you have!\n");
+            }
+
+            printf("Do you want to select another drink? (1=Yes, 0=No): ");
+            int more;
+            scanf("%d", &more);
+            if (more == 0) {
+                break;
+            }
+        }
+    }
+
+    if (totalPrice == 0) {
+        printf("No drinks selected. Program ended.\n");
+        return 0;
+    }
+
+    calculateChange(totalMoney, totalPrice);
+
+    return 0;
+}
